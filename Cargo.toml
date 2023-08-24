@@ -1,0 +1,3 @@
+[workspace]
+
+members = ["pub_lib","demo_1"]
