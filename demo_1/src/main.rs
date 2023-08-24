@@ -1,3 +1,6 @@
+use pub_lib::add;
+
 fn main() {
-    println!("Hello, world!");
+    let result = add(1, 2);
+    println!("1 + 2 = {}", result);
 }
