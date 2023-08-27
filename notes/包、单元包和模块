@@ -1,0 +1,86 @@
+# 包、单元包、模块
+
+## 包
+
+> 使用Cargo new 命令可以新建一个包(Package)。\
+> \
+> 在文件系统中包是一个文件夹，其中包含src、target文件夹和cargo.toml文件
+
+## 单元包
+
+### 单元包的概念
+
+> 包的下一级叫做单元包，注意：在文件系统中单元包不再是一个文件夹，而是若干*.rs文件。\
+> \
+> src中默认生成了main.rs，这就是一个二进制单元包，同时它也是所有二进制单元包的根节点。
+
+### 单元包的种类
+
+- 二进制单元包(*.rs文件，比如main.rs)
+- 库单元包(特指lib.rs文件)
+- main.rs是所有二进制单元包的根节点，**引用名称与包名相同**
+- lib.rs是库单元包的根节点，**引用名称与包名相同**
+
+### 单元包的使用规则
+
+- 每个包必须包含一个单元包
+- 每个包只能包含一个库单元包，但可以包含多个二进制单元包
+- 可以在src/bin下添加.rs源文件，**每个文件代表一个单独的二进制单元包**
+
+## 模块
+
+### 模块的作用
+
+> 单元包的下一级是模块，其作用是控制作用域及私有性。\
+> 模块决定了一个条目是否可以被外部代码访问。
+
+### 模块的特点
+
+- 使用“mod 名称 {}”的方式来定义，确定了名称及作用域。
+
+    ```rust
+    mod front_of_house{
+        ...
+        mod hosting{
+            fn add_to_waitlist(){}
+        }
+    }
+    ```
+
+- main.rs和lib.rs为什么会被称为根节点呢？就是由于他们还代表了名为crate的模块，这个模块同时也是**根模块**。\
+那么上面的front_of_house，实际上还有一个“上级”，hosting其实是第三级的模块。
+
+- 如何在模块树中定位？
+  
+  - 绝对路径
+  
+  ```rust
+  use 单元包名::front_of_house::hosting //引用别的单元包必须使用单元包名
+  use crate::front_of_house::hosting //在同一个单元包中才可以使用crate
+  ```
+
+  - 相对路径
+
+  > 使用self、super从当前模块开始的相对路径，self代表平级，super代表父级
+
+实例
+
+```rust
+pub mod front_of_house{
+    pub mod hosting{
+        pub fn add_to_waitlist(){
+        }
+    }
+}
+
+pub fn eat_at_restaurant(){
+    //绝对路径
+    crate::front_of_house::hosting::add_to_waitlist();
+    
+    //相对路径
+    self::front_of_house::hosting::add_to_waitlist();
+
+    //由于是平级引用so以下写法也可以
+    front_of_house::hosting::add_to_waitlist()
+}
+```
