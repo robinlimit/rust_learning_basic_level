@@ -1,9 +1,10 @@
 [package]
-name = "demo_1"
+name = "mod_crates"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+# 使用本地类库的语法
 pub_lib = {path = "../pub_lib"}

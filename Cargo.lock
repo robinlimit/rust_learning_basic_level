@@ -3,7 +3,7 @@
 version = 3
 
 [[package]]
-name = "demo_1"
+name = "mod_crates"
 version = "0.1.0"
 dependencies = [
  "pub_lib",
