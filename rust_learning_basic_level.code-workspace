@@ -6,7 +6,6 @@
 	],
 	"settings": {
 		"rust-analyzer.linkedProjects": [
-			".\\pub_lib\\Cargo.toml",
 			".\\pub_lib\\Cargo.toml"
 		]
 	}
