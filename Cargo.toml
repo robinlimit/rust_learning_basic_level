@@ -1,4 +1,8 @@
 [workspace]
 
 # workspace工作空间中“注册”crates
-members = ["pub_lib","mod_crates"]
+members = [
+    "pub_lib",
+    "mod_crates",
+    "ownership",
+]
