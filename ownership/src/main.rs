@@ -21,10 +21,12 @@ fn change_value(arg: i32) -> i32 {
     arg * 2
 }
 
+//参数直接使用String类型
 fn count_character(str: String) -> usize {
     str.len()
 }
 
+// 参数使用&str引用类型
 fn count_char_by_ref(str: &str) -> usize {
     str.len()
 }
