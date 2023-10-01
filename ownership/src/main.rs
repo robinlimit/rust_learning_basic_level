@@ -9,6 +9,12 @@ fn main() {
     // 函数执行之后,将无法访问str
     println!("str has {} characters", count_character(str.clone()));
     println!("after count str is {}", str);
+    //内存clone是"昂贵"的，这时我们可以使用borrow
+    println!(
+        "str has {} characters,count by ref",
+        count_char_by_ref(&str)
+    );
+    println!("after ref count str is {}", str)
 }
 
 fn change_value(arg: i32) -> i32 {
@@ -16,5 +22,9 @@ fn change_value(arg: i32) -> i32 {
 }
 
 fn count_character(str: String) -> usize {
+    str.len()
+}
+
+fn count_char_by_ref(str: &str) -> usize {
     str.len()
 }
