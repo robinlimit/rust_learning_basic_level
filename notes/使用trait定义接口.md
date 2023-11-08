@@ -16,3 +16,35 @@
       fn summarized(&self)->String;
   }
   ```
+- 实现trait
+
+  以下代码是实现trait的最基本形式
+
+  ```rust
+  struct NewsArtical{
+      headline:String,
+      ...
+  }
+  impl Summary for NewsArtical{
+      fn summarized(&self)->String{
+          format!("headline:{}",self.headline)
+      }
+  }
+  ```
+
+  **注意：当要实现的trait和实现trait的类都不在同一个文件中时，无法进行trait实现。只有二者其一定义在此文件中时才正常实现trait**
+
+  如果一个trait中的方法有方法体，则此方法体为其默认实现。若某个类型没有重载这个方法，则执行默认实现。
+
+  ```rust
+  pub trait Summary {
+      fn summarized(&self)->String{
+          format!("this is default")
+      }
+  }
+
+  impl Summary for NewArtical{
+      //此处没有重载summarized方法
+  }
+  
+  ```
