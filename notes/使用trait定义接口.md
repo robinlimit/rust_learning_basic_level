@@ -48,3 +48,32 @@
   }
   
   ```
+  ## 使用泛型参数来实现trait
+
+- 用途
+    当多个类型都需要实现某个trait时，可以使用泛型参数减少重复代码。
+
+- 写法
+  
+  为T类型实现`Parse`trait，T类型需要满足约束(`sized`，`clone`)
+
+  ```rust
+  impl<T> Parse for T
+  where T:sized + clone
+  {
+    todo!()
+  }
+  ```
+
+- 案例
+  
+  - 以下trait定义了某个字符串解析器的方法parse,接收字符串引用，返回Self
+  
+    new_parse.rs
+
+    ```rust
+    pub trait Parse {
+        fn parse(s: &str) -> Self
+    }
+    ```
+
