@@ -76,4 +76,45 @@
         fn parse(s: &str) -> Self
     }
     ```
+- 下面分别为u8和f64类型实现trait
 
+    - 其中使用了`map_or()`和`unwrap_or()`方法处理`Option<>`
+    - **由于返回值为u8，所以编译器可以推断`.parse()`方法的返回类型，可以简化`.parse::<u8>()`这样的写法**
+    - 通过两个实现可以发现，两种类型的实现最大的区别在于正则表达式和匹配失败情况下的默认返回值。这样实现两遍增加了很多重复代码。
+
+    lib.rs
+
+    ```rust
+    use regex::Regex //使用外部正则表达式的库
+
+    impl Parse for u8{
+        fn parse(s: &str) -> Self{
+            let rx: Regex = Regex::new(r"^[0-9]+(.[0-9]+)?").unwrap();//使用正则表达式匹配整数以及小数字符
+            if let Some(capture) = rx.captures(s){
+                capture.get(0).map_or(0,|s| s.to_str().parse().unwrap_or(0))
+            }else{
+                0
+            }
+        }
+    }
+
+    impl Parse for f64{
+        fn parse(s: &str) -> Self{
+            let rx: Regex = Regex::new(r"^[0-9]+(.[0-9]+)?").unwrap();//使用正则表达式匹配整数以及小数字符
+            if let Some(capture) = rx.captures(s){
+                capture.get(0).map_or(0,|s| s.to_str().parse().unwrap_or(0.1))
+            }else{
+                0.1
+            }
+        }
+    }
+
+    #[test]
+    fn test(){
+        assert_eq!(u8::parse("123abc"),123);
+        assert_eq!(u8::parse("1234abc"),0);//1234超出了u8,255的最大值,所以parse()返回None，unwrap_or(0)返回默认值0
+        assert_eq!(u8::parse("abcd"),0);
+        assert_eq!(f64::parse("123.123abcd"),123.123);
+        assert_eq!(f64::parse("abcd"),0.1);
+    }
+    ```
