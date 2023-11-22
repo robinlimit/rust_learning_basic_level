@@ -118,3 +118,31 @@
         assert_eq!(f64::parse("abcd"),0.1);
     }
     ```
+- 使用泛型参数减少重复代码
+
+    T类型有两个约束，可以调用`.parse()`方法，同时要有调用`Default::default()`方法可以返回默认值
+
+    lib.rs
+
+    ```rust
+    impl<T> Parse for T
+    where T: FromStr + Default
+    {
+        let rx: Regex = Regex::new(r"^[0-9]+(.[0-9]+)?").unwrap();
+        // 生成一个创建缺省值的闭包，这里主要是为了简化后续代码
+        // Default::default() 返回的类型根据上下文能推导出来，是 Self
+        // 而我们约定了 Self，也就是 T 需要实现 Default trait        
+        let d = || Default::default();
+        if let Some(capture) = rx.captures(s){
+            capture.get(0).map_or(d(),|s| s.to_str().parse().unwrap_or(d()))
+        }else{
+            d()
+        }
+    }
+
+    #[test]
+    fn test(){
+        assert_eq!(u8::parse("123abc"),123);
+        assert_eq!(f64::parse("123.123abcd"),123.123);
+    }
+    ```
