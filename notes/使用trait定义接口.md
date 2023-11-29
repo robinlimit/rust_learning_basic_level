@@ -146,3 +146,53 @@
         assert_eq!(f64::parse("123.123abcd"),123.123);
     }
     ```
+## 带关联类型的trait
+
+> trait可以通过方法定义公共行为。同时也可以通过"关联类型"，将定义trait时无法确定的类型，留给trait实现者确定
+
+- 写法
+
+    通过实现`type Error`，我们可以定义`parse()`方法出错时返回都Err(x)中，x的类型，实现了相当的灵活性
+
+    **注意：方法中需要写成`Self::Error`，`Self::`不能省略**
+
+    ```rust
+    pub trait Parse{
+        type Error;
+        fn parse(s: &str) -> Result<Self, Self::Error>
+    }
+
+    impl Parse for u8{
+        type Error = String;
+        todo!()
+    }
+    ```
+
+- 案例
+
+    `parse()`方法返回默认值不是一个很好的处理，在Rust中这种“可恢复”的错误应当通过返回`Result<_>`处理。 \
+    但是在trait定义时，我们没法确定`Result<Self, _>`中的第二个参数，在实现时我们可以确定类型。
+
+    ```rust
+    impl<T> Parse for T
+    where
+        T: FromStr,
+    {
+        type Error = String;
+        fn parse(s: &str) -> Result<Self, Self::Error> {
+            let rx = Regex::new(r"^[0-9]+(.[0-9]+)?").unwrap();
+            if let Some(capture) = rx.captures(s) {
+                capture
+                    .get(0)
+                    .map_or(Err("failed to parse string".to_string()), |s| {
+                        s.as_str()
+                            .parse()
+                            .map_err(|_err| "failed to parse string".to_string())
+                    })
+            } else {
+                Err("failed to parse string".to_string())
+            }
+        }
+    }
+    ```
+
