@@ -195,4 +195,39 @@
         }
     }
     ```
+    ## 使用trait限定泛型参数的类型范围
+
+- 标准语法
+
+    ```rust
+    pub fn largest<T:Summary>(tmp:T)->Tn
+
+    pub fn notify<T:Summary>(item1:T,item2:T)
+    ```
+
+- 语法糖
+
+    ```rust
+    pub fn largest(tmp: impl Summary)->String
+    //此写法等同于上面的泛型写法，但是最好不要多用
+    ```
+
+- 多个trait约束
+
+    ```rust
+    pub fn notify<T:Summary + Display>(item:T)
+    ```
+
+- 使用Where来提高多个泛型参数多个trait时可读性
+
+    ```rust
+    pub fn notify<T,V>(item1:T,item2:V)
+        where T:Summary + Display,
+            V:Clone + Debug
+    //注意where语句之后再开始写方法体
+    {
+        todo!();
+    }
+    ```
+
 
