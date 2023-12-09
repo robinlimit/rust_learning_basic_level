@@ -229,5 +229,18 @@
         todo!();
     }
     ```
+## 返回实现了trait的类型，使用trait限定返回值泛型的类型范围
+
+- 标准语法
+  
+    ```rust
+    pub returns_summarizable()->impl Summary{
+        todo!();
+    }
+    ```
+
+- 使用限制
+
+    只有在方法体只可能返回一个类型时才可以使用trait限定返回类型
 
 
