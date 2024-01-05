@@ -242,5 +242,73 @@
 - 使用限制
 
     只有在方法体只可能返回一个类型时才可以使用trait限定返回类型
+    
+## 在定义trait时使用泛型
+
+> 不同于实现trait时使用泛型参数，定义trait时我们也可以使用泛型参数，增加trait的灵活性。
+
+- 如何定义
+
+    以下这个trait是标准库中用于提供+法运算的，我们可以通过其实现运算符重载。
+
+    在方法名之后使用泛型参数`<Rhs = Self>`，代表add()方法的第二个参数默认与第一个参数类型一致，但是也可以实现两个参数类型不一样的+法
+
+    ```rust
+    pub trait Add<Rhs = Self> {
+        type Output;
+        #[must_use]
+        fn add(self, rhs: Rhs) -> Self::Output;
+    }
+    ```
+
+- 如何实现
+
+    以下例子定义了一个`struct`用来描述数学中的复数，通过操作符重载，我们实现了复数与实数的加法
+
+    main.rs
+
+    ```rust
+    //定义复数（实部、虚部）
+    pub struct Complex{
+        real: f64,
+        imagine: f64,
+    }
+    //构造方法
+    impl Complex {
+        pub fn new(real: f64, imagine: f64) -> Self{
+            Self { real, imagine}
+        }
+    }
+    //实现与实数(f64)的+法
+    impl Add<&f64> for &Complex {
+        type Output = Complex;
+
+        fn add(self, rhs: &f64) -> Self::Output {
+            let real = self.real + rhs;
+            Complex::new(real, self.imagine)
+        }
+    }
+
+    impl Add for &Complex {
+        type Output = Complex;
+
+        fn add(self, rhs: Self) -> Self::Output {
+            let real = self.real + rhs.real;
+            let imagine = self.imagine + rhs.imagine;
+            Complex::new(real, imagine)
+        }
+    }
+
+    fn main(){
+        let c1 =Complex::new(1.0, 2.0);
+        let c2 = Complex::new(2.0, 3.0);
+        let f = 0.64f64;
+
+        println!("{:?}",&c1 + &f);
+        println!("{:?}",&c2 + &c1);
+    }
+    //Complex { real: 1.6400000000000001, imagine: 2.0 }
+    //Complex { real: 3.0, imagine: 5.0 }
+    ```
 
 
