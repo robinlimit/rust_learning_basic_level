@@ -6,3 +6,5 @@ members = [
     "mod_crates",
     "ownership",
 ]
+
+resolver = "2"
